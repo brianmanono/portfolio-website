@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pomodoro Timer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.3s, color 0.3s;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #333;
+    }
+    #timer {
+      font-size: 5rem;
+      margin: 20px 0;
+    }
+    button {
+      font-size: 1rem;
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    :root {
+      --bg-color: #f8f9fa;
+      --text-color: #333;
+    }
+
+    .dark-mode {
+      --bg-color: #1e1e1e;
+      --text-color: #f0f0f0;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Pomodoro Timer</h1>
+  <div id="timer">25:00</div>
+  <button onclick="startTimer()">Start</button>
+  <button onclick="pauseTimer()">Pause</button>
+  <button onclick="resetTimer()">Reset</button>
+  <button onclick="toggleDarkMode()">🌙</button>
+
+  <!--timer sound element-->
+  <audio id="alarmSound" src="beep-07a.mp3" preload="auto"></audio>
+
+  <script>
+    let workDuration = 0.5 * 60; // 25 minutes
+    let timeLeft = workDuration;
+    let timerInterval;
+    let isRunning = false;
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+      if (isRunning) return;
+      isRunning = true;
+      timerInterval = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          document.getElementById("alarmSound").play();
+          alert("Time's up! Take a break.");
+          isRunning = false;
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      isRunning = false;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      timeLeft = workDuration;
+      updateTimerDisplay();
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    updateTimerDisplay();
+  </script>
+</body>
+</html> 
